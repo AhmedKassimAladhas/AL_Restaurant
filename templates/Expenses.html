@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="Temp :: header">
+</head>
+
+<body>
+	<div th:replace="Temp :: menu"></div>
+	
+	<!-- ButtonExpensesModal -->
+	<div class="btn-group gap-2 m-3">
+		<button class="btn btn-lg btn-primary m-2" type="button"
+			data-bs-toggle="modal" data-bs-target="#addExpensesModal">إضافة مصروف جديد</button>
+	</div>
+	
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3"
+		style="position: absolute; right: 20px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+	<!-- Table -->
+	<div class="container-fluid text-center"
+		style="overflow: scroll; height: 450px; width: 100%;" id="Table">
+		<table class="table table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">التسلسل</th>
+					<th scope="col">الكاشير</th>
+					<th scope="col">التاريخ</th>
+					<th scope="col">الوقت</th>
+					<th scope="col">المصروف</th>
+					<th scope="col">المبلغ</th>
+					<th scope="col">ملاحظات</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody id="mTable">
+				<th:block th:each="exp : ${allExp}">
+					<tr>
+						<td>[[${exp.exp_id}]]</td>
+						<td>[[${exp.exp_empName}]]</td>
+						<td>[[${exp.exp_date}]]</td>
+						<td>[[${exp.exp_time}]]</td>
+						<td>[[${exp.expense}]]</td>
+						<td>[[${exp.exp_cost}]]</td>
+						<td>[[${exp.exp_notes}]]</td>
+						<td>
+							<button type="button" class="btn-danger" data-bs-toggle="modal"
+								data-bs-target="#deleteExpensesModel"
+								th:data-bs-deid="*{exp.exp_id}">حذف</button>
+						</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- ModalExpenses -->
+	<form th:action="@{/ALRestaurant/Expenses}" method="post"
+		th:object="${exp}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addExpensesModal" tabindex="-1"
+			aria-labelledby="adduserModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة مصروف جديد</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" id="exp_empName"
+								name="exp_empName"  th:value="${#request.userPrincipal.principal.getempName}"
+								readonly="readonly" />
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{expense}"
+								id="expense" name="expense" placeholder="المصروف"
+								required="required" />
+							<div class="invalid-feedback">يجب ادخال المصروف</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="number" step="0.01"
+								th:field="*{exp_cost}" placeholder="المبلغ"
+								id="exp_cost" name="exp_cost" required="required" />
+							<div class="invalid-feedback">يجب ادخال المبلغ</div>
+						</div>
+						<div class="form-group mb-3">
+							<textarea class="form-control" cols="5" rows="3"
+								th:field="*{exp_notes}" id="exp_notes" name="exp_notes"
+								placeholder="ملاحظات"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<!-- DeleteExpensesModal -->
+	<form class="deleteExpenses" action="/ALRestaurant/Expenses/delete"
+		method="get">
+		<div class="modal fade" id="deleteExpensesModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteExpensesModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteUserModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="dUid"></label> : هل تريد حذف المصروف رقم <input
+							hidden="hidden" type="text" id="dUid" name="exp_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	
+	
+	<script th:src="@{/resources/js/mainExpenses.js}">
+		
+	</script>
+</body>
+</html>

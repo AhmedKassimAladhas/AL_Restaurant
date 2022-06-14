@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+
+<body>
+	<div th:replace="Temp :: menu"></div>
+
+<div class="btn-group gap-2 m-3"></div>
+
+<!-- Table -->
+	<div class="container-fluid text-center"
+		style="overflow: scroll; height: 450px; width: 100%;" id="Table">
+		<table class="table table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">التسلسل</th>
+					<th scope="col">الاسم</th>
+					<th scope="col">اسم المستخدم</th>
+					<th scope="col">نشط</th>
+					<th scope="col">الصلاحية</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody id="mTable">
+				<th:block th:each="user : ${allUser}">
+					<tr>
+						<td>[[${user.user_id}]]</td>
+						<td>[[${user.emp_id.emp_name}]]</td>
+						<td>[[${user.user_name}]]</td>
+						<td>[[${user.active}]]</td>
+						<td>
+						<th:block th:each="rol : ${user.roles}">
+						[[${rol.name}]]
+						</th:block>
+						</td>
+						<td>
+							<button type="button" class="btn-danger" data-bs-toggle="modal"
+								th:data-bs-deid="*{user.user_id}" data-bs-target="#deleteUserModel"
+								>حذف</button>
+						</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>	
+	<!-- DeleteUserModal -->
+	<form class="deleteUsers" action="/ALRestaurant/Users/delete"
+		method="get">
+		<div class="modal fade" id="deleteUserModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteUserModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteUserModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="dUid"></label> : هل تريد حذف المستخدم رقم <input
+							hidden="hidden" type="text" id="dUid" name="user_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3"
+		style="position: absolute; right: 20px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+	
+	
+	<script th:src="@{/resources/js/mainUser.js}">
+		
+	</script>
+	
+</body>
+</html>

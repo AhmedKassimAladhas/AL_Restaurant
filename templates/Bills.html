@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+
+<body>
+	<div th:replace="Temp :: menu"></div>
+	
+	<div class="btn-group gap-2 m-3"></div>
+	
+	<!-- TableBills -->
+		<div class="col text-center order-last" style="overflow: scroll; max-height: 500px;" id="Table">
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">الفاتورة</th>
+							<th scope="col">التاريخ</th>
+							<th scope="col">الوقت</th>
+							<th scope="col">النوع</th>
+							<th scope="col">اجمالي الفاتورة</th>
+							<th scope="col">الحالة</th>
+						</tr>
+					</thead>
+					<tbody id="mTable">
+						<th:block th:each="bill : ${allBills}">
+							<tr>
+								<td>[[${bill.bill_number}]]</td>
+								<td>[[${bill.bill_date}]]</td>
+								<td>[[${bill.bill_time}]]</td>
+								<td>[[${bill.bill_type}]]</td>
+								<td>[[${bill.bill_total}]]</td>
+								<td>[[${bill.bill_Status}]]</td>
+								<td>
+								<button type="button" class="btn-info" data-bs-toggle="modal"
+								data-bs-target="#PrintModel"
+								th:data-bs-billid="*{bill.bill_id}"
+								th:data-bs-type="*{bill.bill_type}">طباعة</button>
+								</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+		</div>
+		
+			
+		<!-- PrintModelModal -->	
+		<div class="modal fade" id="PrintModel" tabindex="-1"
+			role="dialog" aria-labelledby="PrintModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="PrintModel">تأكيد طباعة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="bid"></label> : هل تريد طباعة فاتورة رقم 
+						<input hidden="hidden" type="text" id="bill_id" name="bill_id" />
+						<input hidden="hidden" type="text" id="bitype" name="bitype" />
+							
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" id="Save" name="Save" 
+						data-bs-dismiss="modal" class="btn btn-primary">طباعة</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	<script th:src="@{/resources/js/mainFollow.js}">
+		
+	</script>
+</body>
+</html>

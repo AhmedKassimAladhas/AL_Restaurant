@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:fragment="header">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>[[${title}]]</title>
+<link th:href="'/resources/css/'+ ${#request.userPrincipal.principal.getThemes} + .min.css" rel="stylesheet">
+
+<link th:if="${themes == 'bootstrapF'}"  href="/resources/css/bootstrapF.min.css" rel="stylesheet">
+
+<link th:if="${themes == 'bootstrapD'}"  href="/resources/css/bootstrapD.min.css" rel="stylesheet">
+
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script> -->
+
+<script
+src="/resources/js/chart.m.js">
+</script>
+
+<script>
+	// Example starter JavaScript for disabling form submissions if there are invalid fields
+	(function() {
+		'use strict';
+		window.addEventListener('load', function() {
+			// Fetch all the forms we want to apply custom Bootstrap validation styles to
+			var forms = document.getElementsByClassName('needs-validation');
+			// Loop over them and prevent submission
+			var validation = Array.prototype.filter.call(forms, function(form) {
+				form.addEventListener('submit', function(event) {
+					if (form.checkValidity() === false) {
+						event.preventDefault();
+						event.stopPropagation();
+					}
+					form.classList.add('was-validated');
+				}, false);
+			});
+		}, false);
+	})();
+	$(document).ready(
+			function() {
+				$("#Search").on(
+						"keyup",
+						function() {
+							var value = $(this).val().toLowerCase();
+							$("#mTable tr").filter(
+									function() {
+										$(this).toggle(
+												$(this).text().toLowerCase()
+														.indexOf(value) > -1)
+									});
+						});
+			});
+
+	var xmlhttp = new XMLHttpRequest();
+	var url = "http://localhost:8081/ALRestaurant/resev";
+
+	xmlhttp.open("GET", url, true);
+	xmlhttp.send();
+</script>
+
+</head>
+<body>
+	<div th:fragment="menu">
+
+		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="Home">AL Restaurant</a>
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+					aria-controls="navbarColor01" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarColor01">
+					<ul class="navbar-nav me-auto">
+						<li class="nav-item"><a class="nav-link active" href="Home">الصفحة
+								الرئيسية <span class="visually-hidden">(current)</span>
+						</a></li>
+						<li class="nav-item">
+						<a type="submit" class="nav-link" id="empName" 
+						th:href="@{'/ALRestaurant/Show?empName=' + ${#request.userPrincipal.principal.getempName}}">
+						قائمة الأسعار</a>
+						</li>
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+							href="#" role="button" aria-haspopup="true" aria-expanded="false"
+							sec:authorize="hasAnyAuthority('ADMIN', 'DIRECTOR', 'CASHER')">الصالة</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="Reception">الصالة</a> <a
+									class="dropdown-item" href="Reservation">الحجوزات</a>
+							</div></li>
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+							href="#" role="button" aria-haspopup="true" aria-expanded="false">متابعة</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="Kitchen">المطبخ</a> <a
+									class="dropdown-item" href="Delivery"
+									sec:authorize="hasAnyAuthority('ADMIN', 'DIRECTOR', 'CASHER')">الدليفري</a>
+							</div></li>	
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+							href="#" role="button" aria-haspopup="true" aria-expanded="false"
+							sec:authorize="hasAnyAuthority('ADMIN', 'DIRECTOR')">التسجيلات</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="Employees">الموظفين</a> 
+								<a class="dropdown-item" href="Users">المستخدمين</a><a
+									class="dropdown-item" href="Dates">المواعيد</a> <a
+									class="dropdown-item" href="Tables">إضافة طاولة</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="Sections">عمل قائمة الاسعار</a>
+							</div></li>
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+							href="#" role="button" aria-haspopup="true" aria-expanded="false"
+							sec:authorize="hasAnyAuthority('ADMIN', 'DIRECTOR', 'CASHER')">الحسابات</a>
+							<div class="dropdown-menu">
+								<a class="dropdown-item" href="Expenses">المصروفات</a> 
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="DayBills">فواتير اليوم</a>
+								<a class="dropdown-item" href="Bills"
+								sec:authorize="hasAnyAuthority('ADMIN', 'DIRECTOR')">جميع الفواتير</a>
+								<div class="dropdown-divider"></div>
+								<form  th:action="@{/ALRestaurant/Account}" method="get">
+									<input  type="text" id="empName" hidden="hidden"
+									name="empName"  th:value="${#request.userPrincipal.principal.getempName}"/>
+									<button type="submit" class="dropdown-item" id="empName">تقفيل حساب الشيفت</button>
+								</form>
+							</div></li>	
+					</ul>
+					<form class="d-flex" style="margin-right: 20px;">
+						<input id="Search" class="form-control me-sm-2" type="text"
+							placeholder="Search">
+					</form>
+					<div class="d-flex">
+							<ul class="navbar-nav me-auto ">
+								<li class="nav-item dropdown"><a sec:authorize="isAuthenticated()"
+							class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+							href="#" role="button" aria-haspopup="true" aria-expanded="false">
+							<span id="name" sec:authentication="principal.empName">Name</span>
+							&nbsp; <span sec:authentication="principal.authorities">Roles</span></a>
+							<div class="dropdown-menu dropdown-menu dropdown-menu-lg-end">
+								<a class="dropdown-item" href="Themes">الاعدادات</a>
+								<div class="dropdown-divider"></div>
+								<form th:action="@{/dologout}" method="Post">
+								<input class="dropdown-item" value="تسجيل خروج" type="submit">
+								</form>
+							</div></li>
+							</ul>
+
+					</div>
+				</div>
+			</div>
+		</nav>
+
+	</div>
+
+	<footer th:fragment="footer">
+		<p>&copy; 2020 attacomsian.com</p>
+	</footer>
+
+</body>
+
+</html>

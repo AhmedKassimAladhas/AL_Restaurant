@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+
+<body>
+	<div th:replace="Temp :: menu"></div>
+	
+	<div class="btn-group gap-2 m-3" ></div>
+	<div class="m-4" align="center">
+		<div class="row " >
+			<!-- TableDelivery -->
+			<div class="col text-center order-first" style="overflow: scroll; height: 450px;" id="Table">
+			<p>الدليفري</p>
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">الفاتورة</th>
+							<th scope="col">التاريخ</th>
+							<th scope="col">الوقت</th>
+							<th scope="col">النوع</th>
+							<th scope="col">الحالة</th>
+						</tr>
+					</thead>
+					<tbody id="mTable">
+						<th:block th:each="deliv : ${allDelivery}">
+							<tr>
+								<td><button class="btn btn-sm btn-primary" type="button"
+									data-bs-toggle="modal" data-bs-target="#AllLineModel"
+									th:data-bs-Lid="*{deliv.bill_id}">
+									[[${deliv.bill_number}]]</button>
+								</td>
+								<td>[[${deliv.bill_date}]]</td>
+								<td>[[${deliv.bill_time}]]</td>
+								<td>[[${deliv.bill_type}]]</td>
+								<td>[[${deliv.delivery_status}]]</td>
+
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+			<!-- TableReception -->
+			<div class="col-4 text-center" style="overflow: scroll; height: 450px;" id="Table">
+				<p>الصالة</p>
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">الفاتورة</th>
+							<th scope="col">التاريخ</th>
+							<th scope="col">الوقت</th>
+							<th scope="col">النوع</th>
+							<th scope="col">الطاولة</th>
+							<th scope="col">الحالة</th>
+						</tr>
+					</thead>
+					<tbody id="mTable">
+						<th:block th:each="deliv : ${allReseption}">
+							<tr>
+								<td><button class="btn btn-sm btn-primary" type="button"
+									data-bs-toggle="modal" data-bs-target="#AllLineModel"
+									th:data-bs-Lid="*{deliv.bill_id}">
+									[[${deliv.bill_number}]]</button>
+								</td>
+								<td>[[${deliv.bill_date}]]</td>
+								<td>[[${deliv.bill_time}]]</td>
+								<td>[[${deliv.bill_type}]]</td>
+								<td>[[${deliv.tab_id.tab_num}]]</td>
+								<td>[[${deliv.bill_Status}]]</td>
+
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+			<!-- TableTakeAway -->
+			<div class="col text-center order-last" style="overflow: scroll; height: 450px;" id="Table">
+				<p>التيك أوي</p>
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">الفاتورة</th>
+							<th scope="col">التاريخ</th>
+							<th scope="col">الوقت</th>
+							<th scope="col">النوع</th>
+							<th scope="col">الحالة</th>
+						</tr>
+					</thead>
+					<tbody id="mTable">
+						<th:block th:each="deliv : ${allTakeAway}">
+							<tr>
+								<td><button class="btn btn-sm btn-primary" type="button"
+									data-bs-toggle="modal" data-bs-target="#AllLineModel"
+									th:data-bs-Lid="*{deliv.bill_id}">
+									[[${deliv.bill_number}]]</button>
+								</td>
+								<td>[[${deliv.bill_date}]]</td>
+								<td>[[${deliv.bill_time}]]</td>
+								<td>[[${deliv.bill_type}]]</td>
+								<td>[[${deliv.bill_Status}]]</td>
+
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="AllLineModel" tabindex="-1"
+			role="dialog" aria-labelledby="AllLineModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="AllLineModel">بيانات الفاتورة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+							<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">الفاتورة</th>
+							<th scope="col">الطلب</th>
+							<th scope="col">التفاصيل</th>
+							<th scope="col">الحجم</th>
+							<th scope="col">العدد</th>
+						</tr>
+					</thead>
+					<tbody id="TableL1">
+						<th:block th:each="lin : ${line}">
+							<tr>
+								<td>[[${lin.bill_id.bill_id}]]</td>
+								<td>[[${lin.men_id.men_name}]]</td>
+								<td>[[${lin.men_id.ingredients}]]</td>
+								<td th:if="${lin.men_id.price_sale == lin.price_sale}">
+								وسط
+								</td>
+								<td th:if="${lin.men_id.price_sale2 == lin.price_sale}">
+								كبير
+								</td>
+								<td>[[${lin.lin_count}]]</td>
+								
+									
+							</tr>
+						</th:block>
+						
+					</tbody>
+				</table>
+							
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script th:src="@{/resources/js/mainKitchen.js}">
+		
+		</script>
+</body>
+</html>

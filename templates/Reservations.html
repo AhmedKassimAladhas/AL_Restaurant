@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+<body>
+<div th:replace="Temp :: menu"></div>
+
+<div class="container-fluid mb-3">
+<br>
+	<!--Reservation Table -->
+	<div class="container-fluid text-center"
+		style="overflow: scroll; height: 550px; width: 100%;" id="Table">
+		<table class="table table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">التسلسل</th>
+					<th scope="col">التاريخ</th>
+					<th scope="col">الوقت</th>
+					<th scope="col">الاسم</th>
+					<th scope="col">الموبايل</th>
+					<th scope="col">الطاولة</th>
+					<th scope="col">الحالة</th>
+				</tr>
+			</thead>
+			<tbody id="mTable">
+				<th:block th:each="res : ${allreservation}">
+					<tr>
+						<td>[[${res.id}]]</td>
+						<td>[[${res.date_reservation}]]</td>
+						<td>[[${res.time_reseravation}]]</td>
+						<td>[[${res.name_reservation}]]</td>
+						<td>[[${res.phone_reservation}]]</td>
+						<td>[[${res.tab_id.tab_num}]]</td>
+						<td>[[${res.old}]]</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+</div>
+</body>
+</html>

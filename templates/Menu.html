@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="Temp :: header">
+</head>
+<body>
+<div th:replace="Temp :: menu"></div>
+<div th:replace="cart :: cart"
+sec:authorize="hasAnyAuthority('ADMIN', 'DIRECTOR', 'CASHER')"></div>
+
+<div class="container-fluid overflow-auto" style="max-width: 70%; height: 700px;">
+<form th:action="@{/ALRestaurant/allmenu}" method="get">
+<input  type="text" id="empName" hidden="hidden"
+	name="empName"  th:value="*{#request.userPrincipal.principal.getempName}"/>
+<th:block th:each="sec : ${allsections}">
+	
+ 									
+  <button type="submit" class="btn btn-secondary" style="width: 22ex;" id="sec_name" name="sec_name" th:value="*{sec}">[[${sec}]]</button>
+
+
+</th:block>
+</form>
+			
+</div>
+
+<!-- DeleteLineModal -->
+	<form th:action="@{/ALRestaurant/show}" method="post">
+		<div class="modal fade" id="deleteLineModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteLineModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteLineModel">تأكيد الإزالة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3" align="right">
+							<label id="men_name"></label> : هل تريد إزالة <input
+								hidden="hidden" type="text" id="menId" name="menId" />
+							<input  type="text" id="empName" hidden="hidden" name="empName"  
+									th:value="*{#request.userPrincipal.principal.getempName}"/>	
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-dark btn-sm" name="secName"
+							id="secName" th:value="*{secName}">إزالة</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	
+	<!-- DeleveryModel -->
+	<form id="myform2" th:action="@{/ALRestaurant/Show}" method="post"
+		th:object="${bill}" class="needs-validation" novalidate>
+		<div class="modal fade" id="DeleveryModel" tabindex="-1" role="dialog"
+			aria-labelledby="DeleveryModel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="DeleveryModel">فاتورة دليفري</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<input class="form-control needs-validation" type="text" 
+							id="i" name="i" hidden="hidden"/>
+							<input class="form-control" type="text" 
+							id="t" name="t" hidden="hidden"/>
+							<input  type="text" id="empName" hidden="hidden"
+								name="empName"  th:value="${#request.userPrincipal.principal.getempName}"/>
+								
+							<input class="form-control" type="text" th:field="*{bill_id}"
+								id="bill_id" name="bill_id" hidden="hidden" />
+							<input class="form-control" type="text" th:field="*{bill_number}"
+								id="bill_number" name="bill_number" readonly="readonly" />	
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{bill_type}"
+								id="bill_type" name="bill_type" readonly="readonly" />
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{cust_id}"
+								id="cust_id" name="cust_id" hidden="hidden" required="required"/>
+							<input class="form-control" type="text" 
+								id="cus_address" name="cus_address" hidden="hidden" required="required"/>	
+							<input class="form-control" type="text" 
+								id="cus_name" name="cus_name" readonly="readonly"/>	
+								<div class="invalid-feedback">يجب ادخال بيانات العميل</div>	
+								<button type="button" class="form-control btn btn-dark btn-sm"
+								data-bs-toggle="modal" data-bs-target="#custModel">بيانات العميل</button>								
+						</div>
+						<div class="form-floating mb-3">
+							<select class="form-select" id="bill_delverymen" name="bill_delverymen"
+								aria-label="Floating label select example" th:field="*{bill_delverymen}">
+								<option value="" hidden="hidden"></option>
+								<th:object th:each="delevery : ${allDelevery}">
+									<option th:value="${delevery.emp_name}">[[${delevery.emp_name}]]</option>
+								</th:object>
+							</select> <label for="floatingSelect">الطيار</label>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text"
+								th:field="*{bill_total_Buy}" hidden="hidden" id="bill_total_Buy"
+								name="bill_total_Buy" />
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text"
+								th:field="*{bill_total_Sale}" id="bill_total_Sale"
+								name="bill_total_Sale" readonly="readonly" /> <label
+								for="floatingInputGrid" style="color: black; font-weight: bold;">السعر</label>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text"
+								th:field="*{delevery_cost}" 
+								pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" id="delevery_cost"
+								name="delevery_cost"  required="required"/> <label for="delevery_cost" class="form-label"
+								 style="color: black; font-weight: bold;">سعر التوصيل</label>
+								<div class="invalid-feedback">يجب ادخال سعر التوصيل</div>	
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text"
+								th:field="*{bill_discount}"
+								pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" id="Dbill_discount"
+								name="Dbill_discount" /> <label for="floatingInputGrid"
+								style="color: black; font-weight: bold;">الخصم</label>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{bill_total}"
+								id="bill_total" name="bill_total" readonly="readonly" /> <label
+								for="floatingInputGrid" style="color: black; font-weight: bold;">إجمالي
+								الفاتورة</label>
+						</div>
+						<div class="form-group mb-3">
+							<textarea class="form-control" cols="5" rows="3"
+								th:field="*{bill_notes}" id="bill_notes" name="bill_notes"
+								placeholder="Notes"></textarea>
+						</div>
+						<input class="form-control" type="text" th:field="*{delivery_status}"
+								id="delivery_status" name="delivery_status" hidden="hidden" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<a id="mdSave"  >
+						
+						<button type="submit" class="btn btn-dark btn-sm">حفظ</button>
+						
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+	<!-- CustModel -->
+	<form class="needs-validation" id="save" name="save" novalidate>
+	<div class="modal fade" id="custModel" tabindex="-1" role="dialog"
+		aria-labelledby="custModel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="custModel">اضافة عميل</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<input class="form-control" type="text" 
+								id="cu_id" name="cu_id" hidden="hidden"/>
+					<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" pattern="[0-9]+" maxlength="11"
+								id="cust_phone" name="cust_phone" required="required"/>
+								<label for="floatingSelect">رقم الموبايل</label>
+							<div class="invalid-feedback">يجب ادخال الموبايل</div>	
+					</div>			
+					<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" 
+								id="cust_name" name="cust_name" required="required"/>
+								<label for="floatingSelect">إسم العميل</label>
+							<div class="invalid-feedback">يجب ادخال اسم العميل</div>	
+					</div>			
+					<div class="form-group-invalid mb-3">
+							<label>العنوان</label>
+							<textarea class="form-control" cols="5" rows="3" 
+								id="cust_address" name="cust_address" required="required"></textarea>
+								
+							<div class="invalid-feedback">يجب ادخال العنوان</div>	
+					</div>
+					<div class="form-group mb-3">
+							<label>ملاحظات</label>
+							<textarea class="form-control" cols="5" rows="3" 
+								id="cust_notes" name="cust_notes" ></textarea>
+					</div>	
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-dark btn-sm"
+						data-bs-dismiss="modal">إلغاء</button>
+					<button type="submit" class="btn btn-dark btn-sm" 
+					data-bs-dismiss="modal" id="csave" name="csave" >حفظ</button>						
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+
+	<!-- TakeAwayModal -->
+	<form id="myform" th:action="@{/ALRestaurant/Show}"   method="post" 
+		  th:object="${bill}" class="needs-validation" novalidate>
+		<div class="modal fade" id="takeAwayModel" tabindex="-1"
+			role="dialog" aria-labelledby="takeAwayModel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="takeAwayModel">فاتورة تيك اوي</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body" >
+						<div class="form-group mb-3">
+							
+							<input class="form-control" type="text" 
+							id="is" name="is" hidden="hidden"/>
+							<input class="form-control" type="text" 
+							id="ts" name="ts" hidden="hidden"/>
+							<input  type="text" id="empName" hidden="hidden"
+								name="empName"  th:value="${#request.userPrincipal.principal.getempName}"/>
+									   
+							<input class="form-control" type="text" th:field="*{bill_id}"
+								   id="bill_id" name="bill_id" hidden="hidden" />
+							<input class="form-control" type="text" th:field="*{bill_number}"
+								id="bill_number" name="bill_number" readonly="readonly" />	   
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{bill_type}"
+								   id="bill_type" name="bill_type" readonly="readonly"/>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{bill_total_Buy}"
+								hidden="hidden"  id="bill_total_Buy" name="bill_total_Buy"/>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{bill_total_Sale}"
+								   id="Tbill_total_Sale" name="Tbill_total_Sale" readonly="readonly"/>
+								<label for="floatingInputGrid" style="color: black; font-weight: bold;">السعر</label>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{bill_discount}"
+								pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" id="Tbill_discount" name="Tbill_discount"/>
+								<label for="floatingInputGrid" style="color: black; font-weight: bold;">الخصم</label>
+								<div class="invalid-feedback">يجب ادخال ارقام</div>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{bill_total}"
+								id="Tbill_total" name="Tbill_total" readonly="readonly"/>
+								<label for="floatingInputGrid" style="color: black; font-weight: bold;">إجمالي الفاتورة</label>
+						</div>
+						<div class="form-group mb-3">
+							<textarea class="form-control" cols="5" rows="3" th:field="*{bill_notes}"
+								id="bill_notes" name="bill_notes" placeholder="Notes"></textarea>
+						</div>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<a onclick="printTake()" id="mtSave"  >
+						<button type="submit" class="btn btn-dark btn-sm">حفظ</button>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- receptionModal -->
+	<form action="/ALRestaurant/Reception/new" method="get"
+			 class="needs-validation" novalidate>
+		<div class="modal fade" id="receptionModel" tabindex="-1"
+			role="dialog" aria-labelledby="receptionModel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="receptionModel"> الصالة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<input class="form-control" type="text"
+								id="bill_id" name="bill_id" hidden="hidden" required="required"/>
+							<input class="form-control" type="text"
+								id="bill_number" name="bill_number" readonly="readonly" />	
+							<input  type="text" id="empName" hidden="hidden"
+								name="empName"  th:value="${#request.userPrincipal.principal.getempName}"/>		
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" 
+								id="bill_type" name="bill_type" readonly="readonly" />
+						</div>
+						<div class="form-floating mb-3">
+							<select class="form-select" id="tab_id" name="tab_id"
+								aria-label="Floating label select example"
+								 required="required">
+								<option value="" hidden="hidden"></option>
+								<th:block th:each="tab : ${allTables}">
+									<option th:value="${tab.tab_id}">[[${tab.tab_num}]]</option>
+								</th:block>
+							</select> <label for="floatingSelect">الطاولة</label>
+							<div class="invalid-feedback">يجب اختيار الطاولة</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-dark btn-sm">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3 "
+		style="position: absolute; right: 0px; bottom: 15px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>	
+	<script th:src="@{/resources/js/mainMenu.js}">
+	
+	</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+
+<body>
+	<div th:replace="Temp :: menu"></div>
+
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3"
+		style="position: absolute; right: 20px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+
+	<!-- ModalEmp -->
+	<form th:action="@{/ALRestaurant/Employees}" method="post"
+		th:object="${emp}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addEmpModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة موظف جديد</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text"
+							id="emp_id" name="emp_id" th:value="*{emp_id}"
+							th:field="*{emp_id}"/>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{emp_name}"
+								placeholder="إسم الموظف" id="emp_name" name="emp_name"
+								required />
+							<div class="invalid-feedback">يجب كتابة الاسم</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control sm-2" type="text" 
+								pattern="[0-9]+" maxlength="11"
+								th:field="*{emp_phone}" placeholder="موبايل الموظف"
+								id="emp_phone" name="emp_phone" required />
+							<div class="invalid-feedback">يجب كتابة الموبايل</div>
+						</div>
+						<div class="form-group mb-3">
+							<div class="form-floating">
+								<select class="form-select" th:field="*{emp_job}" required>
+									<option value="" id="emp_job" hidden="hidden"
+										disabled="disabled" selected="selected">الوظيفة</option>
+									<option value="مدير">مدير</option>
+									<option value="كاشير">كاشير</option>
+									<option value="شيف">شيف</option>
+									<option value="دليفري">دليفري</option>
+									<option value="ويتر">ويتر</option>
+								</select> <label for="floatingInputGrid">الوظيفة</label>
+							</div>
+							<div class="invalid-feedback">يجب اختيار الوظيفة</div>
+						</div>
+						<div class="form-group mb-3">
+							<div class="form-floating">
+								<select class="form-select" th:field="*{emp_gender}"
+									required="required">
+									<option value="" id="emp_gender" hidden="hidden"
+										disabled="disabled" selected>النوع</option>
+									<option value="Male">ذكر</option>
+									<option value="Female">أنثى</option>
+								</select> <label for="floatingInputGrid">النوع</label>
+							</div>
+							<div class="invalid-feedback">يجب اختيار النوع</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text"
+								th:field="*{emp_insurance}" id="emp_insurance"
+								name="emp_insurance" placeholder="الرقم التأميني" />
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{emp_salary}"
+								placeholder="المرتب" id="emp_salary" name="emp_salary" />
+						</div>
+						<input hidden="hidden" type="text" th:field="*{user}"
+							value="false" id="emp_user">
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- ModalUser -->
+	<form th:action="@{/ALRestaurant/Users}" method="post"
+		th:object="${user}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addUserModal" tabindex="-1"
+			aria-labelledby="adduserModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة مستخدم جديد</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text" id="empId"
+							name="empId" th:field="*{emp_id}" />
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" id="empName"
+								name="empName" readonly="readonly" />
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{user_name}"
+								id="user_name" name="user_name" placeholder="User Name"
+								required="required" />
+							<div class="invalid-feedback">يجب ادخال اسم مستخدم</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text"
+								th:field="*{user_password}" placeholder="User Password"
+								id="user_password" name="user_password" required="required" />
+							<div class="invalid-feedback">يجب ادخال كلمة المرور</div>
+						</div>
+						<div class="form-group mb-3">
+							<div class="form-floating">
+								<select class="form-select" id="user_Role" name="user_Role" 
+								 th:field="*{roles}" required="required">
+								 	<option value="" id="user_Role" hidden="hidden"
+										disabled="disabled" selected></option>
+									<th:block th:each="rol : ${AllRole}">	
+										<option th:value="${rol.id}">[[${rol.name}]]</option>
+									</th:block>									
+								</select> <label for="floatingInputGrid">الصلاحيات</label>
+								<div class="invalid-feedback">يجب اختيار الصلاحية</div>
+							</div>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox"  th:field="*{active}"
+								id="flexCheckChecked" checked="checked" required="required"> <label
+								class="form-check-label" for="flexCheckChecked"> نشط </label>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- ButtonEmpModal -->
+	<div class="btn-group gap-2 m-3">
+		<button class="btn btn-lg btn-primary m-2" type="button"
+			data-bs-toggle="modal" data-bs-target="#addEmpModal"
+			data-bs-title="Add New Employee">إضافة موظف جديد</button>
+	</div>
+	<!-- DeleteEmpModal -->
+	<form class="deleteUsers" action="/ALRestaurant/Employees/delete"
+		method="get">
+		<div class="modal fade" id="deleteUserModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteUserModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteUserModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="dUid"></label> : هل تريد حذف الموظف رقم <input
+							hidden="hidden" type="text" id="dUid" name="emp_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- ModalShifts -->
+	<form th:action="@{/ALRestaurant/Shifts}" method="post"
+		th:object="${shift}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addShiftModal" tabindex="-1"
+			aria-labelledby="shiftModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة مواعيد جديدة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text" id="empId"
+							name="empId" th:field="*{emp_id}" />
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" id="empName"
+								name="empName" readonly="readonly" />
+						</div>
+						<div class="row g-3 mb-2">
+							<div class="col-md-2">
+								<div class="form-floating">
+									<select class="form-select" id="floatingSelect"
+										aria-label="Floating label select example"
+										th:field="*{dat_saturday}" required>
+										<option value="" hidden="hidden"></option>
+										<th:block th:each="date : ${allDate}">
+											<option th:value="${date.dat_id}"
+												th:if="${date.dat_number == 0}">Off</option>
+											<option th:value="${date.dat_id}"
+												th:unless="${date.dat_number == 0}">[[${date.dat_number+'
+												'+date.time_from+' '+date.time_to}]]</option>
+										</th:block>
+									</select> <label for="floatingSelect">السبت</label>
+									<div class="invalid-feedback">يجب اختيار رقم الشيفت</div>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-floating">
+									<select class="form-select" id="floatingSelect"
+										aria-label="Floating label select example"
+										th:field="*{dat_sunday}" required>
+										<option value="" hidden="hidden"></option>
+										<th:block th:each="date : ${allDate}">
+											<option th:value="${date.dat_id}"
+												th:if="${date.dat_number == 0}">Off</option>
+											<option th:value="${date.dat_id}"
+												th:unless="${date.dat_number == 0}">[[${date.dat_number+'
+												'+date.time_from+' '+date.time_to}]]</option>
+										</th:block>
+									</select> <label for="floatingSelect">الاحد</label>
+									<div class="invalid-feedback">يجب اختيار رقم الشيفت</div>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-floating">
+									<select class="form-select" id="floatingSelect"
+										aria-label="Floating label select example"
+										th:field="*{dat_monday}" required>
+										<option value="" hidden="hidden"></option>
+										<th:block th:each="date : ${allDate}">
+											<option th:value="${date.dat_id}"
+												th:if="${date.dat_number == 0}">Off</option>
+											<option th:value="${date.dat_id}"
+												th:unless="${date.dat_number == 0}">[[${date.dat_number+'
+												'+date.time_from+' '+date.time_to}]]</option>
+										</th:block>
+									</select> <label for="floatingSelect">الاثنين</label>
+									<div class="invalid-feedback">يجب اختيار رقم الشيفت</div>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-floating">
+									<select class="form-select" id="floatingSelect"
+										aria-label="Floating label select example"
+										th:field="*{dat_tuesday}" required>
+										<option value="" hidden="hidden"></option>
+										<th:block th:each="date : ${allDate}">
+											<option th:value="${date.dat_id}"
+												th:if="${date.dat_number == 0}">Off</option>
+											<option th:value="${date.dat_id}"
+												th:unless="${date.dat_number == 0}">[[${date.dat_number+'
+												'+date.time_from+' '+date.time_to}]]</option>
+										</th:block>
+									</select> <label for="floatingSelect">الثلاثاء</label>
+									<div class="invalid-feedback">يجب اختيار رقم الشيفت</div>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-floating">
+									<select class="form-select" id="floatingSelect"
+										aria-label="Floating label select example"
+										th:field="*{dat_wednesday}" required>
+										<option value="" hidden="hidden"></option>
+										<th:block th:each="date : ${allDate}">
+											<option th:value="${date.dat_id}"
+												th:if="${date.dat_number == 0}">Off</option>
+											<option th:value="${date.dat_id}"
+												th:unless="${date.dat_number == 0}">[[${date.dat_number+'
+												'+date.time_from+' '+date.time_to}]]</option>
+										</th:block>
+									</select> <label for="floatingSelect">الاربعاء</label>
+									<div class="invalid-feedback">يجب اختيار رقم الشيفت</div>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-floating">
+									<select class="form-select" id="floatingSelect"
+										aria-label="Floating label select example"
+										th:field="*{dat_thursday}" required>
+										<option value="" hidden="hidden"></option>
+										<th:block th:each="date : ${allDate}">
+											<option th:value="${date.dat_id}"
+												th:if="${date.dat_number == 0}">Off</option>
+											<option th:value="${date.dat_id}"
+												th:unless="${date.dat_number == 0}">[[${date.dat_number+'
+												'+date.time_from+' '+date.time_to}]]</option>
+										</th:block>
+									</select> <label for="floatingSelect">الخميس</label>
+									<div class="invalid-feedback">يجب اختيار رقم الشيفت</div>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-floating">
+									<select class="form-select" id="floatingSelect"
+										aria-label="Floating label select example"
+										th:field="*{dat_friday}" required>
+										<option value="" hidden="hidden"></option>
+										<th:block th:each="date : ${allDate}">
+											<option th:value="${date.dat_id}"
+												th:if="${date.dat_number == 0}">Off</option>
+											<option th:value="${date.dat_id}"
+												th:unless="${date.dat_number == 0}">[[${date.dat_number+'
+												'+date.time_from+' '+date.time_to}]]</option>
+										</th:block>
+									</select> <label for="floatingSelect">الجمعه</label>
+									<div class="invalid-feedback">يجب اختيار رقم الشيفت</div>
+								</div>
+							</div>
+							<div class="col-sm">
+								<div class="form-floating">
+									<input class="form-control" type="Date" th:field="*{dat_from}"
+										id="dat_from" name="dat_from" placeholder="Date From" required />
+									<label for="floatingInputGrid">Date From</label>
+									<div class="invalid-feedback">يجب اختيار التاريخ</div>
+								</div>
+							</div>
+							<div class="col-sm">
+								<div class="form-floating">
+									<input class="form-control" type="Date" th:field="*{dat_to}"
+										placeholder="Date To" id="dat_to" name="dat_to" required /> <label
+										for="floatingInputGrid">التاريخ من</label>
+									<div class="invalid-feedback">يجب اختيار التاريخ</div>
+								</div>
+							</div>
+						</div>
+						<div class="row g-4 mb-3"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</form>
+	<!-- Table -->
+	<div class="container-fluid text-center"
+		style="overflow: scroll; height: 450px; width: 100%;" id="Table">
+		<table class="table table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">التسلسل</th>
+					<th scope="col">الاسم</th>
+					<th scope="col">الموبايل</th>
+					<th scope="col">الوظيفة</th>
+					<th scope="col">الجنس</th>
+					<th scope="col">رقم التئمين</th>
+					<th scope="col">المرتب</th>
+					<th scope="col">المستخدمين</th>
+					<th scope="col">المواعيد</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody id="mTable">
+				<th:block th:each="emp : ${allEmp}">
+					<tr>
+						<td>[[${emp.emp_id}]]</td>
+						<td>[[${emp.emp_name}]]</td>
+						<td>[[${emp.emp_phone}]]</td>
+						<td>[[${emp.emp_job}]]</td>
+						<td>[[${emp.emp_gender}]]</td>
+						<td>[[${emp.emp_insurance}]]</td>
+						<td>[[${emp.emp_salary}]]</td>
+						<td><span class="h5 mr-3" th:if="${emp.user == 'true'}">1</span>
+							<button type="button" class="btn-primary"
+								data-bs-target="#addUserModal" data-bs-toggle="modal"
+								th:data-bs-id="*{emp.emp_id}" th:data-bs-name="*{emp.emp_name}"
+								th:unless="${emp.user == 'true'}">إضافة</button> &nbsp;&nbsp;</td>
+						<td><button type="button" class="btn-primary"
+								data-bs-target="#datesModel" data-bs-toggle="modal"
+								th:data-bs-empId="*{emp.emp_id}"
+								th:data-bs-empName="*{emp.emp_name}">عرض</button> &nbsp;&nbsp;
+							<button type="button" class="btn-primary"
+								data-bs-target="#addShiftModal" data-bs-toggle="modal"
+								th:data-bs-id="*{emp.emp_id}" th:data-bs-name="*{emp.emp_name}">
+								إضافة</button></td>
+						<td>
+							<button type="button" class="btn-danger" data-bs-toggle="modal"
+								data-bs-target="#deleteUserModel"
+								th:data-bs-deid="*{emp.emp_id}">حذف</button> &nbsp;&nbsp;
+							<button type="button" class="btn-success"
+								data-bs-target="#addEmpModal" data-bs-toggle="modal"
+								data-bs-title="Edit Employee" th:data-bs-id="*{emp.emp_id}"
+								th:data-bs-name="*{emp.emp_name}"
+								th:data-bs-phone="*{emp.emp_phone}"
+								th:data-bs-job="*{emp.emp_job}"
+								th:data-bs-gender="*{emp.emp_gender}"
+								th:data-bs-insurance="*{emp.emp_insurance}"
+								th:data-bs-salary="*{emp.emp_salary}"
+								th:data-bs-user="*{emp.user}">تعديل</button>
+						</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+
+
+
+	<div class="modal fade" id="datesModel" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-xl"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<h5 class="modal-title" id="titleModalLabel">
+						<label id="bemp"></label> : جدول مواعيد لـ <input type="text"
+							id="name" hidden="hidden">
+					</h5>
+				</div>
+				<div class="modal-body">
+					<table id="myTable" class="table table-hover table-dark">
+						<thead>
+							<tr>
+								<th scope="col">الموظف</th>
+								<th scope="col">السبت</th>
+								<th scope="col">الاحد</th>
+								<th scope="col">الاثنين</th>
+								<th scope="col">الثلاثاء</th>
+								<th scope="col">الاربعاء</th>
+								<th scope="col">الخميس</th>
+								<th scope="col">الجمعه</th>
+								<th scope="col">يبدأ من</th>
+								<th scope="col">ينتهي في</th>
+							</tr>
+						</thead>
+						<tbody id="shiftTable" style="overflow: scroll;">
+							<th:block th:each="shift : ${allShift}">
+								<tr>
+									<td>[[${shift.emp_id.emp_name}]]</td>
+									<td>[[${shift.dat_saturday.time_from+"&nbsp;&nbsp;"+shift.dat_saturday.time_to}]]</td>
+									<td>[[${shift.dat_sunday.time_from+"&nbsp;&nbsp;"+shift.dat_sunday.time_to}]]</td>
+									<td>[[${shift.dat_monday.time_from+"&nbsp;&nbsp;"+shift.dat_monday.time_to}]]</td>
+									<td>[[${shift.dat_tuesday.time_from+"&nbsp;&nbsp;"+shift.dat_tuesday.time_to}]]</td>
+									<td>[[${shift.dat_wednesday.time_from+"&nbsp;&nbsp;"+shift.dat_wednesday.time_to}]]</td>
+									<td>[[${shift.dat_thursday.time_from+"&nbsp;&nbsp;"+shift.dat_thursday.time_to}]]</td>
+									<td>[[${shift.dat_friday.time_from+"&nbsp;&nbsp;"+shift.dat_friday.time_to}]]</td>
+									<td>[[${shift.dat_from}]]</td>
+									<td>[[${shift.dat_to}]]</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">إلغاء</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script th:src="@{/resources/js/mainScript.js}">
+		
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+
+<body>
+	<div th:replace="Temp :: menu"></div>
+
+	
+	<div class="btn-group gap-2 m-3">
+		
+		<button class="btn btn-lg btn-primary m-2" type="button"
+			data-bs-toggle="modal" data-bs-target="#endAccountModal"
+			th:data-bs-date="*{dateDay}" th:data-bs-shif="*{shift}" 
+			th:data-bs-bil="*{billNumber}" th:data-bs-deliv="*{deleviryNum}"
+			th:data-bs-take="*{TakeNum}" th:data-bs-rec="*{ReceptionNum}" 
+			th:data-bs-totalBill="*{billTotal}" th:data-bs-totaldeliv="*{deleviryTotal}" 
+			th:data-bs-totaltake="*{TakeTotal}" th:data-bs-totalrec="*{ReceptionTotal}" 
+			th:data-bs-totalexp="*{expensesTotal}" >إضافة مصروف جديد</button>
+	
+	</div>
+	
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3"
+		style="position: absolute; right: 20px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+	
+	<!-- Table -->
+	<div class="container-fluid text-center"
+		style="overflow: scroll; height: 450px; width: 100%;" id="Table">
+		<table class="table table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">التسلسل</th>
+					<th scope="col">الموظف</th>
+					<th scope="col">التاريخ</th>
+					<th scope="col">الشيفت</th>
+					<th scope="col">عدد الفواتير</th>
+					<th scope="col">عدد الدليفري</th>
+					<th scope="col">عدد التيك اوي</th>
+					<th scope="col">عدد الصالة</th>
+					<th scope="col">إجمالي الفواتير</th>
+					<th scope="col">الدليفري</th>
+					<th scope="col">التيك اوي</th>
+					<th scope="col">الصالة</th>
+					<th scope="col">المصروفات</th>
+				</tr>
+			</thead>
+			<tbody id="mTable">
+				<th:block th:each="acc : ${allAcc}">
+					<tr>
+						<td>[[${acc.id}]]</td>
+						<td>[[${acc.emp}]]</td>
+						<td>[[${acc.acc_date}]]</td>
+						<td>[[${acc.shift}]]</td>
+						<td>[[${acc.bills}]]</td>
+						<td>[[${acc.deleviry}]]</td>
+						<td>[[${acc.takeAway}]]</td>
+						<td>[[${acc.reception}]]</td>
+						<td>[[${acc.total_bills}]]</td>
+						<td>[[${acc.total_deleviry}]]</td>
+						<td>[[${acc.total_takeAway}]]</td>
+						<td>[[${acc.total_reception}]]</td>
+						<td>[[${acc.total_expenses}]]</td>
+						
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>	
+
+
+    <!-- ModalAccount -->
+	<form th:action="@{/ALRestaurant/Account}" method="post"
+		th:object="${acc}" class="needs-validation" novalidate>
+		<div class="modal fade" id="endAccountModal" tabindex="-1"
+			aria-labelledby="endAccountModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة مصروف جديد</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" id="empName"
+								name="empName"  th:value="${#request.userPrincipal.principal.getempName}"
+								readonly="readonly" />
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{acc_date}"
+								id="acc_date" name="acc_date" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">التاريخ</label>	
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{shift}"
+								id="shift" name="shift" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">الشيفت</label>	
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{bills}"
+								id="bills" name="bills" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">عدد الفواتير</label>
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{deleviry}"
+								id="deleviry" name="deleviry" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">عدد الدليفري</label>								
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{takeAway}"
+								id="take_away" name="take_away" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">عدد التيك اوي</label>	
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{reception}"
+								id="reception" name="reception" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">عدد الصالة</label>	
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{total_bills}"
+								id="total_bills" name="total_bills" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">إجمالي الفواتير</label>	
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{total_deleviry}"
+								id="total_deleviry" name="total_deleviry" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">إجمالي الدليفري</label>	
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{total_takeAway}"
+								id="total_take_away" name="total_take_away" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">إجمالي التيك اوي</label>		
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{total_reception}"
+								id="total_reception" name="total_reception" readonly="readonly"/>
+							<label for="floatingInputGrid"  style="font-weight: bold; color: black;">إجمالي الصالة</label>		
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{total_expenses}"
+								id="total_expenses" name="total_expenses" readonly="readonly"/>
+							<label for="floatingInputGrid" style="font-weight: bold; color: black;">إجمالي المصروفات</label>		
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+			
+	<script th:src="@{/resources/js/mainAccount.js}">
+		
+	</script>		
+</body>
+</html>

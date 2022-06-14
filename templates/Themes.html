@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+
+<body>
+	<div th:replace="Temp :: menu"></div>
+
+<form action="/ALRestaurant/Themes/Save">
+<input type="text" id="userName" hidden="hidden"
+	name="userName"  th:value="${#request.userPrincipal.principal.getUsername}"/>
+<div class="btn-group gap-2 m-3">
+
+<div class="gap-2 m-3">
+
+<img src="/resources/images/bootstrapD.png" style="max-width: 100%;" />
+<div class="form-group mb-3" align="center">
+	<input type="radio" class="form-check-input" name="flexRadioDefault" id="flexRadioDefault1" 
+		value="bootstrapD" onchange="openButton()"> 
+	<label class="form-check-label" for="flexRadioDefault1">
+    	Dark
+  </label>
+</div>
+</div>
+
+<div class="gap-2 m-3">
+
+<img src="/resources/images/bootstrapF.png" style="max-width: 100%;" />
+<div class="form-group mb-3" align="center">
+	<input type="radio" class="form-check-input" name="flexRadioDefault" id="flexRadioDefault2" 
+		value="bootstrapF" onchange="openButton()">
+	<label class="form-check-label" for="flexRadioDefault2">
+    	Flatly
+  </label>
+</div>	
+</div>
+</div>
+
+<div class="d-grid gap-3 m-3" align="center">	
+	<button class="btn btn-primary" type="submit" id="Save" style="margin: 0% 30% 0% 30%;"
+	disabled="disabled">حفظ</button>
+</div>
+
+</form>
+<!-- Message -->
+	<div class="btn-group gap-2 m-3"
+		style="position: absolute; right: 20px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+	
+	<script th:src="@{/resources/js/mainThemes.js}">
+		
+	</script>
+	
+</body>
+</html>

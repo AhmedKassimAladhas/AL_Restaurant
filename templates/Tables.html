@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+<body>
+	<div th:replace="Temp :: menu"></div>
+
+
+	<div class="d-grid gap-2 m-2">
+		<button class="btn btn-primary" type="button"
+			data-bs-target="#addTableModal" data-bs-toggle="modal"
+			data-bs-title="إضافة طاولة جديدية">طاولة جديدة</button>
+	</div>
+
+	<div class="container-fluid text-center"
+		style="overflow: scroll; height: 550px; width: 100%;" id="Table">
+		<table class="table table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">التسلسل</th>
+					<th scope="col">الطاولة</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody id="mTable">
+				<th:block th:each="tab : ${allTables}">
+					<tr>
+						<td>[[${tab.tab_id}]]</td>
+						<td>[[${tab.tab_num}]]</td>
+						<td>
+							<button type="button" class="btn-danger" data-bs-toggle="modal"
+								data-bs-target="#deleteTableModel"
+								th:data-bs-tid="*{tab.tab_id}"
+								th:data-bs-tnum="*{tab.tab_num}">حذف</button> &nbsp;&nbsp;
+							<button type="button" class="btn-success"
+								data-bs-target="#addTableModal" data-bs-toggle="modal"
+								th:data-bs-id="*{tab.tab_id}" data-bs-title="تعديل الطاولة"
+								th:data-bs-name="*{tab.tab_num}">Edit</button>
+						</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+
+
+	<!-- AddTableModal -->
+	<form th:action="@{/ALRestaurant/Tables}" method="post"
+		th:object="${tab}" enctype="multipart/form-data"
+		class="needs-validation" novalidate>
+		<div class="modal fade" id="addTableModal" tabindex="-1"
+			aria-labelledby="addTableModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة طاولة جديدة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text" id="tab_id"
+							name="tab_id" th:field="*{tab_id}" />
+
+						<div class="form-group mb-3">
+							<input class="form-control" type="Number" th:field="*{tab_num}"
+								id="tab_num" name="tab_num" placeholder="Table"
+								required="required" min="1" />
+							<div class="invalid-feedback">يجب ادخال الرقم</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلفاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- DeleteTableModal -->
+	<form class="deleteTable" action="/ALRestaurant/Tables/delete"
+		method="get">
+		<div class="modal fade" id="deleteTableModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteTableModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteTableModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="Tnam"></label> : هل تريد حذف الطاولة رقم <input
+							hidden="hidden" type="text" id="tab_id" name="tab_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3 "
+		style="position: absolute; right: 20px; bottom: 15px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+
+<script th:src="@{/resources/js/mainTables.js}">
+
+</script>
+</body>
+</html>

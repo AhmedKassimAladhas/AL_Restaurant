@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+<body>
+<!-- 	<div th:replace="Temp :: menu"></div> -->
+	
+<div 	class="bg-primary container-fluid mb-3 border border-secondary border-2 float-end overflow-auto"
+		style="max-width: 30%; height: 750px;">
+
+		<h2 class="card-header" align="center">فاتورة رقم : [[${billId.Bill_number}]]</h2>
+		<br>
+		<div class="container-fluid overflow-auto">
+			<div class="card-group">
+
+				<th:block th:each="line : ${allLine}">
+					<div class="col-sm-3">
+						<div class="card bg-light mb-3" style="color: black;">
+							<button type="button" class="btn-close" data-bs-toggle="modal"
+								data-bs-target="#deleteLineModel" th:data-bs-id="*{line.lin_id}"
+								th:data-bs-name="*{line.men_id.men_name}"
+								th:data-bs-bil="*{billId.Bill_id}" style="align-self: center;"></button>
+							<img th:src="*{'data:image/jpeg;base64,'+{line.men_id.image}}"
+								style="width: 100%; height: 50px" alt="" />
+							<div align="center" style="font-size: 10px;">[[${line.men_id.men_name}]]</div>
+							<div align="center" style="font-size: 15px;">[[${line.lin_count}]]</div>
+						</div>
+					</div>
+
+				</th:block>
+
+			</div>
+
+		</div>
+		<div class="card-body" align="center">
+			جنية [[${totalSale}]]
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+		<form th:action="@{/ALRestaurant/Reception}" method="get">
+			<button type="submit" class="btn btn-secondary">رجوع</button>
+		</form>
+
+	</div>
+	<br>
+	<div class="container-fluid overflow-auto"
+		style="max-width: 70%; height: 620px;">
+		<!-- 		<form th:action="@{/ALRestaurant/addNew}" method="get"> -->
+		<div class="card-group">
+			<th:block th:each="men : ${allmenus}">
+				<div class="col-sm-3">
+					<div class="card mb-3" style="max-width: 13rem;">
+						<h6 class="card-header" align="center">[[${men.men_name}]]</h6>
+						<img th:src="*{'data:image/jpeg;base64,'+{men.image}}"
+							style="width: 205px; height: 100px" alt="" />
+						<ul class="list-group list-group-flush"
+							style="align-items: flex-end;">
+							<li class="list-group-item" id="pricSale"
+								value="*{men.price_sale}"><span>السعر : </span>[[${men.price_sale}]]</li>
+							<li class="list-group-item" th:if="${men.price_sale2 != null}">
+								<span>السعر كبير : </span>[[${men.price_sale2}]]
+							</li>
+						</ul>
+						<div class="card-body" align="right">[[${men.ingredients}]]</div>
+						<div class="card-footer text-muted" align="right">
+							<div class="bg clearfix">
+								<button type="submit" class="btn btn-dark btn-sm float-start"
+									th:if="${men.price_sale2 != null}" data-bs-toggle="modal"
+									data-bs-target="#newLineModel"
+									th:data-bs-id="*{men.men_id}" th:data-bs-buy="*{men.price_buy}"
+									th:data-bs-sale="*{men.price_sale2}"
+									th:data-bs-name="*{men.men_name}"
+									th:data-bs-bilId="*{billId.Bill_id}">اضافة الكبير</button>
+
+								<button type="button" class="btn btn-dark btn-sm float-end"
+									data-bs-toggle="modal" data-bs-target="#newLineModel"
+									th:data-bs-id="*{men.men_id}" th:data-bs-buy="*{men.price_buy}"
+									th:data-bs-sale="*{men.price_sale}"
+									th:data-bs-name="*{men.men_name}"
+									th:data-bs-bilId="*{billId.Bill_id}">اضافة</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+			</th:block>
+		</div>
+		<!-- 		</form> -->
+	</div>
+
+	<!-- AddNewSmallDetailModal -->
+	<form th:action="@{/ALRestaurant/Reception/addNew}" method="post"
+		class="needs-validation" novalidate>
+		<div class="modal fade" id="newLineModel" tabindex="-1"
+			role="dialog" aria-labelledby="newLineModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="newLineModel">تأكيد الاضافة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3" align="right">
+							<label id="men_name"></label> : هل تريد اضافة
+						</div>
+						<input hidden="hidden" type="text" id="b_id" name="b_id" />
+						<input hidden="hidden" type="text" id="men_id" name="men_id" /> <input
+							hidden="hidden" type="text" id="men_buy" name="men_buy" /> <input
+							hidden="hidden" type="text" id="men_sale" name="men_sale" />
+						<div class="form-group mb-3">
+							<input class="form-control" type="Number" id="men_count"
+								name="men_count" placeholder="Count" required="required" min="1" />
+							<div class="invalid-feedback">يجب ادخال العدد</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-dark btn-sm" id="secName"
+							name="secName" th:value="*{secName}">اضافة</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- deleteLineModal -->
+	<form th:action="@{/ALRestaurant/Reception/allMenu/delete}" method="post">
+		<div class="modal fade" id="deleteLineModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteLineModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteLineModel">تأكيد الإزالة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3" align="right">
+							<label id="men_name"></label> : هل تريد إزالة <input
+								hidden="hidden" type="text" id="menId" name="menId" /><input
+								hidden="hidden" type="text" id="bId" name="bId" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-dark btn-sm" name="secName"
+							id="secName" th:value="*{secName}">إزالة</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3 "
+		style="position: absolute; right: 20px; bottom: 15px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+	
+	<script th:src="@{/resources/js/mainBillReception.js}">
+		
+	</script>
+</body>
+</html>

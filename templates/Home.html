@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="Temp :: header">
+
+</head>
+
+<body>
+
+	<div th:replace="Temp :: menu"></div>
+	
+<div class="container" style="margin-top: 2%;">
+  <div class="row">
+    <div class="col">
+
+		<div class="alert alert-dismissible alert-danger" style="height: 100px;" align="center">
+  			TakeAway <br> [[${TakeAway}]]
+  		</div>
+
+    </div>
+    <div class="col">
+      
+		<div class="alert alert-dismissible alert-success" style="height: 100px;" align="center">
+  			Delevery <br> [[${Delevery}]]
+  		</div>
+  		
+    </div>
+    <div class="col">
+      
+      	<div class="alert alert-dismissible alert-info" style="height: 100px;" align="center">
+  			Reception <br> [[${Reception}]]
+  	  	</div>
+    </div>
+  </div>
+</div>
+	
+<div class="container">
+  <div class="row">
+    <div class="col" style="width: 30%;">
+      
+	<div >
+		<div class="card chart-container">
+  			<canvas id="chart" style="height: 350px;"></canvas>
+		</div>
+	</div>
+
+    </div>
+    <div class="col" style="width: 30%;">
+      
+	<div >
+		<div class="card chart-container">
+  			<canvas id="chartD" style="height: 350px;"></canvas>
+		</div>
+	</div>	
+
+    </div>
+    <div class="col" style="width: 30%;">
+      
+	<div >
+		<div class="card chart-container">
+  			<canvas id="chartR" style="height: 350px;"></canvas>
+		</div>
+	
+</div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script th:src="@{/resources/js/mainHome.js}">
+
+</script>
+</body>
+</html>

@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+<body>
+	<div th:replace="Temp :: menu"></div>
+
+	<div class="accordion accordion-flush" id="accordionFlushExample">
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="flush-headingOne">
+				<button class="btn btn-lg btn-outline-primary m-3" type="button"
+					data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+					aria-expanded="false" aria-controls="flush-collapseOne">
+					الاقسام</button>
+				<button class="btn btn-lg btn-outline-primary m-3" type="button"
+					data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+					aria-expanded="false" aria-controls="flush-collapseTwo">
+					الاصناف</button>
+				<button class="btn btn-lg btn-outline-primary m-3" type="button"
+					data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
+					aria-expanded="false" aria-controls="flush-collapseThree">
+					تفاصيل القائمة</button>
+				<button class="btn btn-lg btn-outline-primary m-3" type="button"
+					data-bs-toggle="collapse" data-bs-target="#flush-collapseFour"
+					aria-expanded="false" aria-controls="flush-collapseFour">
+					قائمة الاسعار</button>	
+				<button class="btn btn-lg btn-outline-primary m-3" type="button"
+					data-bs-toggle="collapse" data-bs-target="#flush-collapsefive"
+					aria-expanded="false" aria-controls="flush-collapsefive">
+					أسعار أخرى</button>			
+			</h2>
+
+			<div id="flush-collapseOne" class="accordion-collapse collapse"
+				aria-labelledby="flush-headingOne"
+				data-bs-parent="#accordionFlushExample">
+
+				<div class="d-grid gap-2 m-2">
+					<button class="btn btn-primary" type="button"
+						data-bs-target="#addSectionModal" data-bs-toggle="modal"
+						data-bs-title="Add New Section">إضافة قسم</button>
+				</div>
+
+				<div class="container-fluid text-center"
+					style="overflow: scroll; height: 550px; width: 100%;" id="Table">
+					<table class="table table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">التسلسل</th>
+								<th scope="col">القسم</th>
+								<th scope="col">الصنف</th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody id="mTable">
+							<th:block th:each="sec : ${allSec}">
+								<tr>
+									<td>[[${sec.sec_id}]]</td>
+									<td>[[${sec.sec_name}]]</td>
+									<td>
+										<button type="button" class="btn-primary"
+											data-bs-target="#addCategoriesModal" data-bs-toggle="modal"
+											th:data-bs-secid="*{sec.sec_id}"
+											th:data-bs-secname="*{sec.sec_name}"
+											data-bs-title="Add New Category">إضافة</button>
+									</td>
+									<td>
+										<button type="button" class="btn-danger"
+											data-bs-toggle="modal" data-bs-target="#deleteSectionModel"
+											th:data-bs-deid="*{sec.sec_id}">حذف</button> &nbsp;&nbsp;
+										<button type="button" class="btn-success"
+											data-bs-target="#addSectionModal" data-bs-toggle="modal"
+											data-bs-title="Edit Section" th:data-bs-id="*{sec.sec_id}"
+											th:data-bs-name="*{sec.sec_name}">تعديل</button>
+									</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+			<div id="flush-collapseTwo" class="accordion-collapse collapse"
+				aria-labelledby="flush-headingTwo"
+				data-bs-parent="#accordionFlushExample">
+
+				<div class="container-fluid text-center"
+					style="overflow: scroll; height: 610px; width: 100%;" id="Table">
+					<table class="table table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">التسلسل</th>
+								<th scope="col">القسم</th>
+								<th scope="col">الاسم</th>
+								<th scope="col">القياس</th>
+								<th scope="col">العدد</th>
+								<th scope="col"></th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody id="mTable">
+							<th:block th:each="cat : ${allCat}">
+								<tr>
+									<td>[[${cat.cat_id}]]</td>
+									<td>[[${cat.sec_id.sec_name}]]</td>
+									<td>[[${cat.cat_name}]]</td>
+									<td>[[${cat.measuring}]]</td>
+									<td>[[${cat.cat_count}]]</td>
+									<td>
+										<button type="button" class="btn-primary"
+											data-bs-toggle="modal" data-bs-target="#addDetailsModel"
+											th:data-bs-mcnam="*{cat.cat_name}"
+											th:data-bs-mcid="*{cat.cat_id}">إضافة الى القائمة</button>
+									</td>
+									<td>
+										<button type="button" class="btn-danger"
+											data-bs-toggle="modal"
+											data-bs-target="#deleteCategoriesModel"
+											th:data-bs-dcid="*{cat.cat_id}">حذف</button> &nbsp;&nbsp;
+										<button type="button" class="btn-success"
+											data-bs-target="#addCategoriesModal" data-bs-toggle="modal"
+											th:data-bs-cid="*{cat.cat_id}" data-bs-title="Edit Category"
+											th:data-bs-secname="*{cat.sec_id.sec_name}"
+											th:data-bs-secid="*{cat.sec_id.sec_id}"
+											th:data-bs-catmeasu="*{cat.measuring}"
+											th:data-bs-catname="*{cat.cat_name}"
+											th:data-bs-catnum="*{cat.cat_count}">تعديل</button>
+									</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+			<div id="flush-collapseThree" class="accordion-collapse collapse"
+				aria-labelledby="flush-headingThree"
+				data-bs-parent="#accordionFlushExample">
+				<div class="container-fluid text-center"
+					style="overflow: scroll; height: 610px; width: 100%;" id="Table">
+					<table class="table table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">التسلسل</th>
+								<th scope="col">العدد او الكمية</th>
+								<th scope="col">الاسم</th>
+								<th scope="col">الصنف</th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody id="mTable">
+							<th:block th:each="det : ${allDet}">
+								<tr>
+									<td>[[${det.det_id}]]</td>
+									<td>[[${det.det_count}]]</td>
+									<td>[[${det.det_name}]]</td>
+									<td>[[${det.cat_id.cat_name}]]</td>
+									<td>
+										<button type="button" class="btn-danger"
+											data-bs-toggle="modal"
+											data-bs-target="#deleteMenuDetailModel"
+											th:data-bs-detid="*{det.det_id}">حذف</button>
+									</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="flush-collapseFour" class="accordion-collapse collapse"
+				aria-labelledby="flush-headingFour"
+				data-bs-parent="#accordionFlushExample">
+
+				<div class="d-grid gap-2 m-2">
+					<button class="btn btn-primary" type="button"
+						data-bs-target="#addMenuModal" data-bs-toggle="modal"
+						data-bs-title="Add New Menu">إضافة قائمة جديدة</button>
+				</div>
+
+				<div class="container-fluid text-center"
+					style="overflow: scroll; height: 550px; width: 100%;" id="Table">
+					<table class="table table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">التسلسل</th>
+								<th scope="col">القسم</th>
+								<th scope="col">الاسم</th>
+								<th scope="col">سعر البيع صغير</th>
+								<th scope="col">سعر البيع كبير</th>
+								<th scope="col">سعر الشراء</th>
+								<th scope="col">المكونات</th>
+								<th scope="col">العدد</th>
+								<th scope="col">ملاحظات</th>
+								<th scope="col">صورة</th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody id="mTable">
+							<th:block th:each="men : ${allMenu}">
+								<tr>
+									<td>[[${men.men_id}]]</td>
+									<td>[[${men.men_section}]]</td>
+									<td>[[${men.men_name}]]</td>
+									<td>[[${men.price_sale}]]</td>
+									<td>[[${men.price_sale2}]]</td>
+									<td>[[${men.price_buy}]]</td>
+									<td>[[${men.ingredients}]]</td>
+									<td>[[${men.count}]]</td>
+									<td>[[${men.men_notes}]]</td>
+									<th><img th:src="*{'data:image/jpeg;base64,'+{men.image}}" 
+                					style="width:100px; height: 50px" alt=""/></th>
+									<td>
+										<button type="button" class="btn-danger"
+											data-bs-toggle="modal"
+											data-bs-target="#deleteMenuModel"
+											th:data-bs-menid="*{men.men_id}">حذف</button> &nbsp;&nbsp;
+										<button type="button" class="btn-success"
+											data-bs-target="#addMenuModal" data-bs-toggle="modal"
+											th:data-bs-mid="*{men.men_id}" data-bs-title="Edit Menu"
+											th:data-bs-secname="*{men.men_section}"
+											th:data-bs-mname="*{men.men_name}"
+											th:data-bs-msale="*{men.price_sale}"
+											th:data-bs-msale2="*{men.price_sale2}"
+											th:data-bs-mbuy="*{men.price_buy}"
+											th:data-bs-mingr="*{men.ingredients}"
+											th:data-bs-mcount="*{men.count}"
+											th:data-bs-mnote="*{men.men_notes}">تعديل</button>
+									</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<form th:action="@{/ALRestaurant/addOther}" method="get">
+			<div id="flush-collapsefive" class="accordion-collapse collapse"
+				aria-labelledby="flush-headingfive"
+				data-bs-parent="#accordionFlushExample">
+															
+				<div class="d-grid gap-3 m-3"   style="width: 20%;">
+					<div class="form-group form-floating mb-3">
+							<input class="form-control" type="number"
+								id="id" name="id" hidden="hidden" th:value="${idOther}"/>
+							<input class="form-control" type="number"  step="0.01" 
+								id="tax" name="tax" placeholder="الضريبة" th:value="${taxOther}"
+								style="text-align: center;"/>
+							<label for="floatingInputGrid" 
+									style="color: black; font-weight: bold;">الضريبة</label>	
+					</div>
+					<div class="form-group form-floating mb-3">
+							<input class="form-control" type="number" 
+								id="delivery" name="delivery" placeholder="سعر التوصيل" 
+								th:value="${deliveryOther}" style="text-align: center;"/>
+							<label for="floatingInputGrid" 
+									style="color: black; font-weight: bold;">سعر التوصيل</label>	
+					</div>
+				</div>
+				<div class="d-grid gap-3 m-3" style="width: 20%;">
+					<button class="btn btn-primary" type="submit" >حفظ</button>
+				</div>
+				
+
+			</div>			
+			</form>
+		</div>
+
+	</div>
+
+	<!-- ModalSection -->
+	<form th:action="@{/ALRestaurant/Sections}" method="post"
+		th:object="${sec}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addSectionModal" tabindex="-1"
+			aria-labelledby="adduserModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة قسم جديد</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text"
+							id="sec_id" name="sec_id" th:field="*{sec_id}" />
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{sec_name}"
+								id="sec_name" name="sec_name" placeholder="Section Name"
+								required="required" />
+							<div class="invalid-feedback">يجب ادخال اسم القسم</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- DeleteSecModal -->
+	<form class="deleteSection" action="/ALRestaurant/Sections/delete"
+		method="get">
+		<div class="modal fade" id="deleteSectionModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteSectionModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteSectionModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="dUid"></label> : هل تريد حذف القسم رقم <input
+							hidden="hidden" type="text" id="dUid" name="sec_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- ModalCategories -->
+	<form th:action="@{/ALRestaurant/Categories}" method="post"
+		th:object="${cat}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addCategoriesModal" tabindex="-1"
+			aria-labelledby="addCategoriesModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة صنف جديد</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text"
+							id="cat_id" name="cat_id" th:field="*{cat_id}" />
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{sec_id}"
+								id="sec_id" name="sec_id" required="required" hidden="hidden" />
+							<input class="form-control" type="text" readonly="readonly"
+								id="sec_name" name="sec_name" required="required" />
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{cat_name}"
+								id="cat_name" name="cat_name" placeholder="Categorie Name"
+								required="required" />
+							<div class="invalid-feedback">يجب ادخال اسم الصنف</div>
+						</div>
+						<div class="form-floating mb-3">
+									<select class="form-select" id="catMeasuring" name="catMeasuring"
+										aria-label="Floating label select example"
+										th:field="*{measuring}">
+										<option value="" hidden="hidden"> </option>
+										
+											<option value="واحدة">واحدة</option>
+											<option value="جرام">جرام</option>
+											<option value="كيلو">كيلو</option>
+										
+									</select> <label for="floatingSelect">القياسات</label>
+								</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="Number" 
+								pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" th:field="*{cat_count}"
+								id="cat_count" name="cat_count" placeholder="Categorie Count"
+								required="required" min="1" />
+							<div class="invalid-feedback">يجب ادخال عدد الاصناف</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- DeleteCategoriModal -->
+	<form class="deleteCategorie" action="/ALRestaurant/Categories/delete"
+		method="get">
+		<div class="modal fade" id="deleteCategoriesModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteSectionModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteSectionModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="dUid"></label> : هل تريد حذف الصنف رقم <input
+							hidden="hidden" type="text" id="dUid" name="cat_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- AddDetailsModal -->
+	<form th:action="@{/ALRestaurant/details}" method="post"
+		th:object="${det}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addDetailsModel" tabindex="-1" role="dialog"
+			aria-labelledby="addDetailsModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة إلى القائمة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" id="catId" name="catId"
+								th:field="*{cat_id}" hidden="hidden" /> <input
+								class="form-control" type="text" readonly="readonly"
+								id="catName" name="catName" required="required" />
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{det_name}"
+								id="det_name" name="det_name" placeholder="Menu Name"
+								list="datalistOptions" required="required" />
+							<div class="invalid-feedback">يجب ادخال اسم الصنف</div>
+							<datalist id="datalistOptions">
+								<th:block th:each="menuName : ${menuName}">
+								<option  th:value="${menuName}">
+								</th:block>
+							</datalist>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control"
+								pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" inputmode="decimal"
+								th:field="*{det_count}" id="det_count" name="det_count"
+								placeholder="Count Or Quantity" required="required" />
+							<div class="invalid-feedback">يجب ادخال عدد الصنف او الكمية</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- AddMenuModal -->
+	<form th:action="@{/ALRestaurant/Menu}" method="post"
+		th:object="${men}" enctype="multipart/form-data" class="needs-validation" novalidate>
+		<div class="modal fade" id="addMenuModal" tabindex="-1"
+			aria-labelledby="addMenuModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة قائمة جديدة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text"
+							id="men_id" name="men_id" th:field="*{men_id}" />
+						<div class="form-floating mb-3">
+									<select class="form-select" id="sec_name" name="sec_name"
+										aria-label="Floating label select example"
+										th:field="*{men_section}" required="required">
+										<option value="" hidden="hidden"> </option>
+											<th:block th:each="sec : ${allSec}">
+												<option th:value="${sec.sec_name}">[[${sec.sec_name}]]</option>
+											</th:block>
+									</select> <label for="sec_name">القسم</label>
+									<div class="invalid-feedback">يجب ادخال القسم</div>
+						</div>
+						<div class="form-floating  mb-3">
+									<select class="form-select" id="menuNam" name="menuNam"
+										aria-label="Floating label select example"
+										th:field="*{men_name}" required="required">
+										<option value="" hidden="hidden"> </option>
+											<th:block th:each="menuName : ${menuName}">
+												<option th:value="${menuName}">[[${menuName}]]</option>
+											</th:block>
+									</select> <label for="menuNam">اسم القائمة</label>
+									<div class="invalid-feedback">يجب ادخال اسم القائمة</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" th:field="*{price_sale}"
+								id="price_sale" name="price_sale" placeholder="Selling Price 1"
+								required="required"/>
+							<div class="invalid-feedback">يجب ادخال سعر البيع</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" th:field="*{price_sale2}"
+								id="price_sale2" name="price_sale2" placeholder="Selling Price 2"/>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" th:field="*{price_buy}"
+								id="price_buy" name="price_buy" placeholder="Purchasing Price"
+								required="required"/>
+							<div class="invalid-feedback">يجب ادخال سعر الشراء</div>
+						</div>
+						<div class="form-group mb-3">
+							<textarea class="form-control" cols="5" rows="3" th:field="*{ingredients}"
+								id="ingredients" name="ingredients" placeholder="Ingredients"
+								required="required"></textarea>
+							<div class="invalid-feedback">يجب ادخال المكونات</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="Number" th:field="*{count}"
+								id="count" name="count" placeholder="Count"
+								required="required" min="1" />
+							<div class="invalid-feedback">يجب ادخال العدد</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="file" accept="image/jpg, image/png, image/jpeg"
+								id="img" name="img" placeholder="Image"/>
+						</div>
+						<div class="form-group mb-3">
+							<textarea class="form-control" cols="5" rows="3" th:field="*{men_notes}"
+								id="men_notes" name="men_notes" placeholder="Notes"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- DeleteMenuModal -->
+	<form class="deleteMenu" action="/ALRestaurant/Menu/delete"
+		method="get">
+		<div class="modal fade" id="deleteMenuModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteMenuModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteMenuModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="mUid"></label> : هل تريد حذف قائمة الطعام رقم <input
+							hidden="hidden" type="text" id="mUid" name="men_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- DeleteMenuDetailModal -->
+	<form class="deleteMenuDetail" action="/ALRestaurant/Menu/detailDelete"
+		method="get">
+		<div class="modal fade" id="deleteMenuDetailModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteMenuDetailModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteMenuModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label id="deUid"></label> : هل تريد حذف العنصر رقم <input
+							hidden="hidden" type="text" id="deUid" name="det_id" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- ShowCategories -->
+	<div class="modal fade" id="categoriesModel" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalScrollableTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-xl"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<h5 class="modal-title" id="titleModalLabel">
+						<label id="bemp"></label> : جدول مواعيد لـ <input type="text"
+							id="name" hidden="hidden">
+					</h5>
+				</div>
+				<div class="modal-body">
+					<table id="CatTable" class="table table-hover table-dark">
+						<thead>
+							<tr>
+								<th scope="col">التسلسل</th>
+								<th scope="col">القسم</th>
+								<th scope="col">الاسم</th>
+								<th scope="col">العدد</th>
+							</tr>
+						</thead>
+						<tbody style="overflow: scroll;">
+							<th:block th:each="cat : ${allCat}">
+								<tr>
+									<td>[[${cat.cat_id}]]</td>
+									<td>[[${cat.sec_id.sec_name}]]</td>
+									<td>[[${cat.cat_name}]]</td>
+									<td>[[${cat.cat_count}]]</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">إلغاء</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3 "
+		style="position: absolute; right: 20px; bottom: 15px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+
+	<script th:src="@{/resources/js/mainSection.js}">
+
+	</script>
+</body>
+</html>

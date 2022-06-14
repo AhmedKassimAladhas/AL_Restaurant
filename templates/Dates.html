@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+
+</head>
+<body>
+<div th:replace="Temp :: menu"></div>
+
+
+<!-- Message -->
+	<div class="btn-group gap-2 m-3"
+		style="position: absolute; right: 20px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+	
+	<!-- ModalDate -->
+	<form th:action="@{/ALRestaurant/Dates}" method="post"
+		th:object="${date}" class="needs-validation" novalidate>
+		<div class="modal fade" id="addDateModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="title">إضافة مواعيد جديد</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<input class="form-control" hidden="hidden" type="text" id="dat_id" name="emp_id" th:value="*{dat_id}" th:field="*{dat_id}" />
+						<div class="form-group mb-3">
+							<input class="form-control" type="Number" th:field="*{dat_number}"
+								placeholder="Date Number" id="dat_number" name="dat_number" required min="1"/>
+							<div class="invalid-feedback">يجب كتابة رقم الميعاد</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control sm-2" type="Time"
+								th:field="*{time_from}" placeholder="Time From" 
+								id="time_from" name="time_from" required />
+							<div class="invalid-feedback">يجب تحديد الوقت</div>
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="Time"
+								th:field="*{time_to}" 
+								id="time_to" name="time_to" placeholder="Time To" required/>
+							<div class="invalid-feedback">يجب تحديد الوقت</div>
+						</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal" id="close">إلغاء</button>
+						<button type="submit" class="btn btn-primary" id="save">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+	<!-- ButtonDateModal -->
+	<div class="btn-group gap-2 m-3">
+		<button class="btn btn-lg btn-primary m-2" type="button"
+			data-bs-toggle="modal" data-bs-target="#addDateModal"
+			data-bs-title="Add New Date">إضافة مواعيد جديد</button>
+	</div>
+	<!-- DeleteDateModal -->
+	<form class="deleteDate" action="/ALRestaurant/Dates/Delete"
+		method="get" >
+		<div class="modal fade" id="deleteDateModel" tabindex="-1"
+			role="dialog" aria-labelledby="deleteDateModel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="deleteUserModel">تأكيد حذف</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close">
+						</button>
+					</div>
+					<div class="modal-body">
+					<label id="dUNum"></label>
+						 : هل تريد حذف الميعاد رقم 						 
+						 <input hidden="hidden"	type="text" id="dat_id" name="dat_id"/>
+					</div>					
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-primary">حذف</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+<!-- Table -->
+	<div class="container-fluid text-center"
+		style="overflow: scroll; height: 450px; width: 100%;" id="Table">
+		<table class="table table-bordered">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">التسلسل</th>
+					<th scope="col">الوقت من</th>
+					<th scope="col">الوقت الى</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody id="mTable">
+				<th:block th:each="date : ${allDates}">
+					<tr>
+						<td>[[${date.dat_number}]]</td>
+						<td>[[${date.time_from}]]</td>
+						<td>[[${date.time_to}]]</td>
+						<td>
+							<button type="button" class="btn-danger" data-bs-toggle="modal"
+								data-bs-target="#deleteDateModel" th:data-bs-id="*{date.dat_id}" 
+								th:data-bs-Num="*{date.dat_number}">
+								&nbsp;&nbsp;حذف&nbsp;&nbsp;
+								</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<button type="button" class="btn-success"
+								data-bs-target="#addDateModal" data-bs-toggle="modal"
+								data-bs-title="Edit Date"
+								th:data-bs-id="*{date.dat_id}"
+								th:data-bs-number="*{date.dat_number}"
+								th:data-bs-from="*{date.time_from}"
+								th:data-bs-to="*{date.time_to}"
+								>
+								 &nbsp;&nbsp;تعديل&nbsp;&nbsp;
+								 </button>
+						</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+
+
+ <script th:src="@{/resources/js/mainDates.js}"> </script> 
+</body>
+</html>

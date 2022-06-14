@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="Temp :: header">
+</head>
+<body>
+	<div th:replace="Temp :: menu"></div>
+
+	<div class="container-fluid overflow-auto">
+		<div class="card-group">
+
+			<th:block th:each="tab : ${allTables}">
+				<div class="col">
+
+
+					<th:if th:if="${tab.tab_statues == 'empty'}">
+						<div class="card border-secondary mb-3"
+							style="max-width: 15rem; margin-top: 10px;">
+							<div class="card-header bg-secondary">
+								<div class="bg clearfix" align="center">
+									<button type="submit" class="btn btn-dark btn-sm"
+										style="width: 5rem;" data-bs-toggle="modal" 
+										data-bs-target="#reservationTablesModel"
+										th:data-bs-Tpid="*{tab.tab_id}" >حجز</button>
+								</div>
+							</div>
+								<div align="center">
+							<img th:if="${tab.tab_statues == 'empty'}"
+								src="/resources/images/table.jpg" style="max-width: 100%;" />
+								<span class="badge bg-light">[[${tab.tab_num}]]</span>
+								</div>
+						</div>
+					</th:if>
+
+					<th:if th:if="${tab.tab_statues == 'busy'}">
+						<div class="card border-danger  mb-3"
+							style="max-width: 15rem; margin-top: 10px;">
+							<div class="card-header bg-danger">
+								<div class="bg clearfix">
+									<button type="submit" class="btn btn-dark btn-sm float-start"
+										style="width: 5rem;" data-bs-toggle="modal"
+										data-bs-target="#sectionTablesModel"
+										th:data-bs-blid="*{tab.tab_bill}">أضافة</button>
+										
+									<button type="submit" class="btn btn-dark btn-sm "
+										style="width: 4rem; margin-left: 3px;" data-bs-toggle="modal"
+										data-bs-target="#endReceptionModal" th:data-bs-id="*{tab.tab_bill}"
+										th:data-bs-type="Reception" th:data-bs-tax="*{taxOther}"  
+										th:data-bs-tabl="*{tab.tab_id}"
+										th:data-bs-tNum="*{tab.tab_num}" >إنهاء</button>
+										
+									<button type="submit" class="btn btn-dark btn-sm float-end"
+										style="width: 3rem;" data-bs-toggle="modal" 
+										data-bs-target="#changeTableModel"
+										th:data-bs-table="*{tab.tab_id}"
+										th:data-bs-bill="*{tab.tab_bill}">تغيير</button>
+								</div>
+							</div>
+							<div align="center">
+							<img th:if="${tab.tab_statues == 'busy'}"
+								src="/resources/images/tableBusy.jpg" style="max-width: 100%;" />
+								<span class="badge bg-danger">[[${tab.tab_num}]]</span>
+							</div>
+						</div>
+					</th:if>
+
+					<th:if th:if="${tab.tab_statues == 'receved'}">
+						<div class="card border-info mb-3"
+							style="max-width: 15rem; margin-top: 10px;">
+							<div class="card-header bg-info">
+								<div class="bg clearfix" align="center">
+								<form th:action="@{/ALRestaurant/Reception/addNewBill}" method="post">
+									<input  type="text" id="empName" hidden="hidden"
+									name="empName"  th:value="${#request.userPrincipal.principal.getempName}"/>
+									<button type="submit" class="btn btn-dark btn-sm float-start" id="tab_id"
+										name="tab_id" style="width: 6rem;" th:value="*{tab.tab_id}" >بدء فاتورة</button>
+								</form>
+									<button type="submit" class="btn btn-dark btn-sm float-end"
+										style="width: 3rem;" data-bs-toggle="modal" 
+										data-bs-target="#endReservationModel"
+										th:data-bs-Tpid="*{tab.tab_id}" >إنهاء</button>
+								</div>
+							</div>
+							<div align="center">
+							<img th:if="${tab.tab_statues == 'receved'}"
+								src="/resources/images/tableReseved.jpg"
+								style="max-width: 100%;" />
+								<span class="badge bg-info">[[${tab.tab_num}]]</span>
+							</div>
+						</div>
+					</th:if>
+
+				</div>
+			</th:block>
+
+		</div>
+	</div>
+
+	<!-- sectionsModel-->
+	<div class="modal fade" id="sectionTablesModel" tabindex="-1"
+		role="dialog" aria-labelledby="sectionTablesModel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="sectionTablesModel">الاقسام</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<div class="container-fluid overflow-auto">
+						<form th:action="@{/ALRestaurant/Reception/allMenu}" method="get">
+
+							<input hidden="hidden" type="text" id="bill_id" name="bill_id" />
+
+							<th:block th:each="sec : ${allsections}">
+
+
+								<button type="submit" class="btn btn-secondary"
+									style="width: 15ex;" id="sec_name" name="sec_name"
+									th:value="*{sec}">[[${sec}]]</button>
+
+							</th:block>
+						</form>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-dark btn-sm"
+						data-bs-dismiss="modal">إلغاء</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- endReceptionModal -->
+	<form th:action="@{/ALRestaurant/Reception/save}" method="get"
+		th:object="${bill}" class="needs-validation3" novalidate>
+		<div class="modal fade" id="endReceptionModal" tabindex="-1"
+			role="dialog" aria-labelledby="endReceptionModal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="endReceptionModal">فاتورة الصالة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<input class="form-control needs-validation" type="text" 
+							id="i" name="i" hidden="hidden"/>
+							<input class="form-control" type="text" 
+							id="t" name="t" hidden="hidden"/>
+							<input  type="text" id="empName" hidden="hidden"
+								name="empName"  th:value="${#request.userPrincipal.principal.getempName}"/>
+								
+							<input class="form-control" type="text" th:field="*{bill_id}"
+								id="bill_id" name="bill_id" hidden="hidden" />	
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text" th:field="*{bill_type}"
+								id="bill_type" name="bill_type" readonly="readonly" />
+						</div>
+						<div class="form-group mb-3">
+							<input class="form-control" type="text"
+								th:field="*{bill_total_Buy}" hidden="hidden" id="bill_total_Buy"
+								name="bill_total_Buy" />
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text"
+								th:field="*{bill_total_Sale}" id="bill_total_Sale"
+								name="bill_total_Sale" readonly="readonly" /> <label
+								for="floatingInputGrid" style="color: black; font-weight: bold;"> السعر</label>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text"
+								th:field="*{bill_discount}"
+								pattern="^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$" id="bill_discount"
+								name="bill_discount" /> <label for="floatingInputGrid"
+								style="color: black; font-weight: bold;">الخصم</label>
+							<div class="invalid-feedback">يجب ادخال ارقام</div>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{tax}"
+								id="tax" name="tax" readonly="readonly" /> <label
+								for="floatingInputGrid" style="color: black; font-weight: bold;">الضريبة</label>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{bill_total}"
+								id="bill_total" name="bill_total" readonly="readonly" /> <label
+								for="floatingInputGrid" style="color: black; font-weight: bold;">إجمالي
+								الفاتورة</label>
+						</div>
+						<div class="form-group form-floating mb-3">
+							<input class="form-control" type="text" th:field="*{tab_id}"
+								id="table" name="table"  hidden="hidden"/>
+								<input class="form-control" type="text" 
+								id="tabN" name="tabN" readonly="readonly" /> <label
+								for="floatingInputGrid" style="color: black; font-weight: bold;">طاولة
+								رقم</label>
+						</div>
+						<div class="form-group mb-3">
+							<textarea class="form-control" cols="5" rows="3"
+								th:field="*{bill_notes}" id="bill_notes" name="bill_notes"
+								placeholder="Notes"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-dark btn-sm" id="rSave" name="rSave">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<!--reservationModel -->
+	<form th:action="@{/ALRestaurant/Reception/reseved}" method="post"
+		th:object="${resrevation}" class="needs-validation" novalidate>
+	<div class="modal fade" id="reservationTablesModel" tabindex="-1"
+		role="dialog" aria-labelledby="reservationTablesModel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="reservationTablesModel">حجز الطاولة</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					
+					<input class="form-control" type="text" id="tab_reserved"
+								name="tab_reserved" th:field="*{tab_id}" hidden=""/>
+					
+					<div class="form-group mb-3">
+							<input class="form-control" type="date" id="date_reservation"
+								name="date_reservation" th:field="*{date_reservation}" placeholder="التاريخ"/>
+						</div>
+					<div class="form-group mb-3">
+							<input class="form-control" type="time" id="time_reseravation"
+								name="time_reseravation" th:field="*{time_reseravation}" placeholder="الوقت"/>
+						</div>
+					<div class="form-group mb-3">
+							<input class="form-control" type="text" id="name_reservation" required="required"
+								name="name_reservation" th:field="*{name_reservation}" placeholder="الاسم"/>
+								<div class="invalid-feedback">يجب ادخال الاسم</div>
+						</div>
+					<div class="form-group mb-3">
+							<input class="form-control" type="text" id="phone_reservation"
+							 pattern="[0-9]+" maxlength="11" name="phone_reservation" 
+							 th:field="*{phone_reservation}" placeholder="الموبايل" required="required"/>
+								<div class="invalid-feedback">يجب ادخال الموبايل بشكل صحيح</div>
+						</div>		
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-dark btn-sm"
+						data-bs-dismiss="modal">إلغاء</button>
+					<button type="submit" class="btn btn-dark btn-sm">حفظ</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+	
+	<!--endReservation -->
+	<form action="/ALRestaurant/Reception/endreseved" method="get" class="needs-validation" novalidate>
+	<div class="modal fade" id="endReservationModel" tabindex="-1"
+		role="dialog" aria-labelledby="endReservationModel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="endReservationModel">حجز الطاولة</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					
+					<input class="form-control" type="text" id="id"
+								name="id" hidden=""/>
+					
+					<span> هل تريد إنهاء الحجز؟</span>
+						
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-dark btn-sm"
+						data-bs-dismiss="modal">إلغاء</button>
+					<button type="submit" class="btn btn-dark btn-sm">إنهاء</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+	
+	<!-- changeReceptionModal -->
+	<form action="/ALRestaurant/Reception/change" method="get"
+			 class="needs-validation" novalidate>
+		<div class="modal fade" id="changeTableModel" tabindex="-1"
+			role="dialog" aria-labelledby="changeTableModel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="changeTableModel"> تغيير الطاولة</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-floating mb-3">
+							<input class="form-control" type="text"
+								hidden="hidden" id="bill_id" name="bill_id"/>
+								<input class="form-control" type="text"
+								hidden="hidden" id="old_tab_id" name="old_tab_id"/>
+						</div>
+						<div class="form-floating mb-3">
+							<select class="form-select" id="tab_id" name="tab_id"
+								aria-label="Floating label select example"
+								 required="required">
+								<option value="" hidden="hidden"></option>
+								<th:block th:each="tabl : ${allEmpty}">
+									<option th:value="${tabl.tab_id}">[[${tabl.tab_num}]]</option>
+								</th:block>
+							</select> <label for="floatingSelect">الطاولة</label>
+							<div class="invalid-feedback">يجب اختيار الطاولة</div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-dark btn-sm"
+							data-bs-dismiss="modal">إلغاء</button>
+						<button type="submit" class="btn btn-dark btn-sm">حفظ</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<!-- Message -->
+	<div class="btn-group gap-2 m-3 "
+		style="position: absolute; right: 20px; bottom: 15px;">
+		<div class="alert alert-dismissible alert-success" id="alertSuccess"
+			th:if="${message}" style="width: 400px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${message}]]
+		</div>
+		<div class="alert alert-dismissible alert-danger" id="alertSuccess"
+			th:if="${error}" style="width: 500px; text-align: center;">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			[[${error}]]
+		</div>
+	</div>
+	
+	<script th:src="@{/resources/js/mainReception.js}">
+		
+	</script>
+</body>
+</html>
